@@ -20,7 +20,8 @@ function preload() {
 }
 
 function create() {
-    this.add.image(400, 300, 'sky');
+    this.add.image(400, 250, 'sky');
+    this.add.image(400, 250, 'star');
 }
 
 function update() {
