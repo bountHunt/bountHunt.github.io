@@ -27,23 +27,19 @@ function preload ()
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
-    this.load.image('background', 'assets/background.png');
+    this.load.image('background', 'assets/start_background.png');
     this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
 }
 
 function create ()
 {
-    this.add.image(400, 250, 'background');
+    this.add.image(400, 250, 'background').setScale(3.5);
 
     platforms = this.physics.add.staticGroup();
 
-    platforms.create(400, 468, 'ground').setScale(2).refreshBody();
+    platforms.create(400, 493.5, 'ground')
 
-    platforms.create(600, 300, 'ground');
-    platforms.create(50, 150, 'ground');
-    platforms.create(750, 120, 'ground');
-
-    player = this.physics.add.sprite(100, 250, 'dude').setScale(5);
+    player = this.physics.add.sprite(100, 250, 'dude').setScale(0.5);
 
     player.setBounce(0);
     player.setCollideWorldBounds(true);
