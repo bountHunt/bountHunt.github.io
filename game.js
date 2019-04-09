@@ -18,6 +18,7 @@ var config = {
 
 var player;
 var platforms;
+var bplatforms;
 
 var game = new Phaser.Game(config);
 
@@ -25,10 +26,12 @@ function preload ()
 {
     this.load.image('sky', 'assets/sky.png');
     this.load.image('ground', 'assets/platform.png');
+    this.load.image('roof', 'assets/bplatform.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
     this.load.image('background', 'assets/start_background.png');
     this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
+    this.load.spritesheet('bount', 'assets/main_right_walk.png', { frameWidth: 32, frameHeight: 48 });
 }
 
 function create ()
@@ -37,9 +40,13 @@ function create ()
 
     platforms = this.physics.add.staticGroup();
 
-    platforms.create(400, 493.5, 'ground')
+    bplatforms = this.physics.add.staticGroup();
 
-    player = this.physics.add.sprite(100, 250, 'dude').setScale(0.5);
+    platforms.create(400, 493.5, 'ground');
+
+    bplatforms.create(400, 593.5, 'roof').setScale(5).refreshBody();
+
+    player = this.physics.add.sprite(100, 250, 'dude').setScale(1);
 
     player.setBounce(0);
     player.setCollideWorldBounds(true);
