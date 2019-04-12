@@ -1,4 +1,5 @@
-import Phaser from "phaser.js";
+
+import Phaser from "phaser";
 import PlatformerScene from "./platformer-scene.js";
 
 const config = {

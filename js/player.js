@@ -1,11 +1,11 @@
-import Phaser from "phaser.js";
+import Phaser from "phaser";
 
 /**
  * A class that wraps up our 2D platforming player logic. It creates, animates and moves a sprite in
  * response to WASD/arrow keys. Call its update method from the scene's update and call its destroy
  * method when you're done with the player.
  */
-export default class Player {
+export class Player {
   constructor(scene, x, y) {
     this.scene = scene;
 
