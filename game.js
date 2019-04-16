@@ -11,12 +11,12 @@ var SceneA = new Phaser.Class({
 
     preload: function ()
     {
-        this.load.image('background', 'assets/background.png');
+        this.load.image('background', 'assets/start.png');
     },
 
     create: function ()
     {
-        this.add.sprite(400, 300, 'background')
+        this.add.sprite(400, 300, 'background').setScale(4).refreshBody;
 
         this.input.once('pointerdown', function () {
 
@@ -132,6 +132,7 @@ var Game = new Phaser.Class({
         this.physics.add.overlap(player, stars, collectStar, null, this);
 
         this.physics.add.collider(player, bombs, hitBomb, null, this);
+        
     },
 
     update: function()
