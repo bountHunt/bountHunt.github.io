@@ -1,5 +1,5 @@
 import Phaser from "phaser.js";
-import Player from "./player.js";
+import { Player } from "./player.js";
 
 /**
  * A class that extends Phaser.Scene and wraps up the core logic for the platformer level.
