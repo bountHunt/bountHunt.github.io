@@ -54,6 +54,7 @@ var Game = new Phaser.Class({
         this.load.image('star', 'assets/star.png');
         this.load.image('bomb', 'assets/bomb.png');
         this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
+        this.load.spritesheet('bount', 'assets/full-sprite.png', { frameWidth: 42, frameHeight: 37});
     },
 
     create: function()
@@ -74,31 +75,33 @@ var Game = new Phaser.Class({
         platforms.create(750, 220, 'ground');
 
         // The player and its settings
-        player = this.physics.add.sprite(100, 450, 'dude');
+        player = this.physics.add.sprite(100, 450, 'bount');
 
         //  Player physics properties. Give the little guy a slight bounce.
-        player.setBounce(0.2);
+        player.setBounce(0);
         player.setCollideWorldBounds(true);
 
         //  Our player animations, turning, walking left and walking right.
         this.anims.create({
             key: 'left',
-            frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-            frameRate: 10,
+            frames: this.anims.generateFrameNumbers('bount', { start: 4, end: 12 }),
+            frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'turn',
-            frames: [ { key: 'dude', frame: 4 } ],
-            frameRate: 20
+            frames:
+            this.anims.generateFrameNumbers('bount', {start: 0, end: 3 }),
+            frameRate: 10,
+            repeat: -1
         });
 
         this.anims.create({
             key: 'right',
-            frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-            frameRate: 10,
-            repeat: -1
+            frames: this.anims.generateFrameNumbers('bount', { start: 13, end:  21}),
+            frameRate: 24,
+            repeat: 1
         });
 
         //  Input Events
@@ -129,9 +132,6 @@ var Game = new Phaser.Class({
         this.physics.add.collider(bombs, platforms);
 
         //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
-        this.physics.add.overlap(player, stars, collectStar, null, this);
-
-        this.physics.add.collider(player, bombs, hitBomb, null, this);
         
     },
 
@@ -164,33 +164,6 @@ var Game = new Phaser.Class({
         if (cursors.up.isDown && player.body.touching.down)
         {
             player.setVelocityY(-330);
-        }
-    },
-
-    collectStar: function (player, star)
-    {
-        star.disableBody(true, true);
-
-        //  Add and update the score
-        score += 10;
-        scoreText.setText('Score: ' + score);
-
-        if (stars.countActive(true) === 0)
-        {
-            //  A new batch of stars to collect
-            stars.children.iterate(function (child) {
-
-                child.enableBody(true, child.x, 0, true, true);
-
-            });
-
-            var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-
-            var bomb = bombs.create(x, 16, 'bomb');
-            bomb.setBounce(1);
-            bomb.setCollideWorldBounds(true);
-            bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-            bomb.allowGravity = false;
         }
     }
 
