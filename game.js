@@ -16,18 +16,80 @@ var SceneA = new Phaser.Class({
 
     create: function ()
     {
-        this.add.sprite(400, 300, 'background').setScale(4).refreshBody;
+        this.add.sprite(400, 300, 'background').setScale(2).refreshBody;
 
         this.input.once('pointerdown', function () {
 
-            console.log('From Loading to Game');
+            console.log('From Loading to MainMenu');
 
-            this.scene.start('game');
+            this.scene.start('MainMenu');
 
         }, this);
     }
 
 });
+
+var boss = new Phaser.Class({
+    Extends: Phaser.Scene,
+
+    initialize:
+
+    function Boss () {
+        Phaser.Scene.call(this, {key: 'boss'})
+    },
+
+    preload: function(){
+        this.load.image('ground', 'assets/platform.png');
+        this.load.spritesheet('bount', 'assets/full-sprite.png', { frameWidth: 42, frameHeight: 37});
+        this.load.image('backgrounds', 'bossbackground.png')
+
+    },
+    
+
+    create: function() {
+        this.add.sprite(400,300, 'backgrounds').setScale(0.5).refreshBody;
+    },
+
+    update: function() {
+
+    },
+
+
+});
+
+var map;
+var layer;
+
+var MainMenu = new Phaser.Class({
+    Extends: Phaser.Scene,
+
+    initialize:
+    function Menu (){
+        Phaser.Scene.call(this, { key: 'MainMenu' })
+    },
+
+    preload: function(){
+        this.load.tilemap('mainMenuBackground', 'assets/mainmenubackground.csv');
+        this.load.tilemap('mainMenuPlatforms', 'assets/mainmenu_platfor.csv');
+        this.load.image('tilesetBackground', 'assets/mainmenu.png');
+        this.load.image('tilesetPlatform', 'assets/platfor.png');
+
+    },
+    
+
+    create: function() {
+        map.addTilesetimage('tilesetBackground');
+        map.addTilesetimage('tilesetPlatform');
+
+        layer = map.createLayer(1);
+
+        layer.resizeWorld();
+    },
+
+    update: function() {
+
+    },
+})
 
 var player;
 var stars;
@@ -144,13 +206,13 @@ var Game = new Phaser.Class({
 
         if (cursors.left.isDown)
         {
-            player.setVelocityX(-160);
+            player.setVelocityX(-120);
 
             player.anims.play('left', true);
         }
         else if (cursors.right.isDown)
         {
-            player.setVelocityX(160);
+            player.setVelocityX(120);
 
             player.anims.play('right', true);
         }
@@ -163,7 +225,7 @@ var Game = new Phaser.Class({
 
         if (cursors.up.isDown && player.body.touching.down)
         {
-            player.setVelocityY(-330);
+            player.setVelocityY(-250);
         }
     }
 
@@ -177,11 +239,11 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
+            gravity: { y: 500 },
             debug: false
         }
     },
-    scene: [SceneA, Game],
+    scene: [SceneA, boss, Game, MainMenu],
 };
 
 var game = new Phaser.Game(config);
