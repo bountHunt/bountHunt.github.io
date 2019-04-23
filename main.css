@@ -27,7 +27,7 @@ h1{
 body {
   height:100%;
   background: #112 url(https://www.pixelstalk.net/wp-content/uploads/images2/Free-Hd-Dark-Wallpapers-Images.jpg)  center;
-  background-size:cover;
+  background: size 1;
   margin:0;
   padding: 0;
 }
