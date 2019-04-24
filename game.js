@@ -1,3 +1,9 @@
+
+
+
+
+
+
 var SceneA = new Phaser.Class({
 
     Extends: Phaser.Scene,
@@ -22,7 +28,7 @@ var SceneA = new Phaser.Class({
 
             console.log('From Loading to MainMenu');
 
-            this.scene.start('MainMenu');
+            this.scene.start('game');
 
         }, this);
     }
@@ -69,21 +75,22 @@ var MainMenu = new Phaser.Class({
     },
 
     preload: function(){
-        this.load.tilemap('mainMenuBackground', 'assets/mainmenubackground.csv');
-        this.load.tilemap('mainMenuPlatforms', 'assets/mainmenu_platfor.csv');
-        this.load.image('tilesetBackground', 'assets/mainmenu.png');
+        this.load.tilemapTiledJSON('map', 'assets/bounthunt.json');
+        this.load.image('groundTiles', 'assets/.png');
         this.load.image('tilesetPlatform', 'assets/platfor.png');
 
     },
     
 
     create: function() {
-        map.addTilesetimage('tilesetBackground');
-        map.addTilesetimage('tilesetPlatform');
+        var map = this.make.tilemap({ key: 'map' });
+        var ground = map.addTilesetImage('kenny_ground_64x64', 'ground');
+        var slants = map.addTilesetImage('kenny_ground_64x64', 'ground');
+        var chains =   map.addTilesetImage('kenny_ground_64x64', 'ground');
+        var spikes = map.addTilesetImage('kenny_ground_64x64', 'ground');
 
-        layer = map.createLayer(1);
 
-        layer.resizeWorld();
+        map.createStaticLayer('Tile Lyaer 1', [ground, slants, chains, spikes])
     },
 
     update: function() {
@@ -111,7 +118,7 @@ var Game = new Phaser.Class({
 
     preload: function ()
     {
-        this.load.image('sky', 'assets/sky.png');
+        this.load.image('sky', 'assets/start_background.png');
         this.load.image('ground', 'assets/platform.png');
         this.load.image('star', 'assets/star.png');
         this.load.image('bomb', 'assets/bomb.png');
@@ -122,18 +129,17 @@ var Game = new Phaser.Class({
     create: function()
     {
         //  A simple background for our game
-        this.add.image(400, 300, 'sky');
+        this.add.image(400, 300, 'sky').setScale(4).refreshBody;
 
         //  The platforms group contains the ground and the 2 ledges we can jump on
         platforms = this.physics.add.staticGroup();
 
         //  Here we create the ground.
         //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-        platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+        platforms.create(400, 568, 'ground').setScale(1).refreshBody();
 
         //  Now let's create some ledges
-        platforms.create(600, 400, 'ground');
-        platforms.create(50, 250, 'ground');
+        platforms.create(400, 400, 'ground');
         platforms.create(750, 220, 'ground');
 
         // The player and its settings
