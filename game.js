@@ -22,7 +22,7 @@ var SceneA = new Phaser.Class({
 
             console.log('From Loading to MainMenu');
 
-            this.scene.start('MainMenu');
+            this.scene.start('game');
 
         }, this);
     }
