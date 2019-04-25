@@ -1,3 +1,9 @@
+
+
+
+
+
+
 var SceneA = new Phaser.Class({
 
     Extends: Phaser.Scene,
@@ -69,21 +75,22 @@ var MainMenu = new Phaser.Class({
     },
 
     preload: function(){
-        this.load.tilemap('mainMenuBackground', 'assets/mainmenubackground.csv');
-        this.load.tilemap('mainMenuPlatforms', 'assets/mainmenu_platfor.csv');
-        this.load.image('tilesetBackground', 'assets/mainmenu.png');
+        this.load.tilemapTiledJSON('map', 'assets/bounthunt.json');
+        this.load.image('groundTiles', 'assets/.png');
         this.load.image('tilesetPlatform', 'assets/platfor.png');
 
     },
     
 
     create: function() {
-        map.addTilesetimage('tilesetBackground');
-        map.addTilesetimage('tilesetPlatform');
+        var map = this.make.tilemap({ key: 'map' });
+        var ground = map.addTilesetImage('kenny_ground_64x64', 'ground');
+        var slants = map.addTilesetImage('kenny_ground_64x64', 'ground');
+        var chains =   map.addTilesetImage('kenny_ground_64x64', 'ground');
+        var spikes = map.addTilesetImage('kenny_ground_64x64', 'ground');
 
-        layer = map.createLayer(1);
 
-        layer.resizeWorld();
+        map.createStaticLayer('Tile Lyaer 1', [ground, slants, chains, spikes])
     },
 
     update: function() {
@@ -111,34 +118,70 @@ var Game = new Phaser.Class({
 
     preload: function ()
     {
-        this.load.image('sky', 'assets/sky.png');
+        this.load.image('sky', 'assets/NEW-BACKGROUND.png');
         this.load.image('ground', 'assets/platform.png');
         this.load.image('star', 'assets/star.png');
-        this.load.image('bomb', 'assets/bomb.png');
-        this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
         this.load.spritesheet('bount', 'assets/full-sprite.png', { frameWidth: 42, frameHeight: 37});
+        this.load.image('platform', 'assets/platfor.png');
+        this.load.spritesheet('boss-idle', 'assets/Cat-Man-TOO-THICK.png', {frameWidth: 80, frameHeight: 101});
+        this.load.spritesheet('boss-right', 'assets/Cat-Man-Right-ARM.png', {frameWidth: 80, frameHeight: 101});
+        this.load.spritesheet('boss-left', 'assets/Cat-Man-Left-ARM.png', {frameWidth: 80, frameHeight: 101});
+        this.load.image('stage','assets/new-platform.png');
     },
 
     create: function()
     {
         //  A simple background for our game
-        this.add.image(400, 300, 'sky');
+        this.add.image(400, 300, 'sky').setScale(2).refreshBody;
+
+        platform = this.physics.add.staticGroup();
 
         //  The platforms group contains the ground and the 2 ledges we can jump on
         platforms = this.physics.add.staticGroup();
 
         //  Here we create the ground.
         //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-        platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-
+        platforms.create(400, 605, 'ground').setScale(1).refreshBody();
         //  Now let's create some ledges
-        platforms.create(600, 400, 'ground');
-        platforms.create(50, 250, 'ground');
-        platforms.create(750, 220, 'ground');
+        platform.create(400, 300, 'platform');
+        platform.create(368, 300, 'platform');
+        platform.create(432, 300, 'platform');
+        platform.create(464, 300, 'platform');
+        platform.create(336, 300, 'platform');
+        platform.create(33, 530, 'stage');
+        platform.create(163, 530, 'stage');
+        platform.create(293, 530, 'stage');
+        platform.create(423, 530, 'stage');
+        platform.create(553, 530, 'stage');
+        platform.create(768, 530, 'stage');
+        platform.create(683, 530, 'stage');
+        platform.create(33+65, 480, 'stage');
+        platform.create(163+65,480, 'stage');
+        platform.create(293+65,480, 'stage');
+        platform.create(423+65, 480, 'stage');
+        platform.create(553+65, 480, 'stage');
+        platform.create(768+65, 480, 'stage');
+        platform.create(683+65, 480, 'stage');
+        platform.create(33, 430, 'stage');
+        platform.create(163, 430, 'stage');
+        platform.create(293, 430, 'stage');
+        platform.create(423, 430, 'stage');
+        platform.create(553, 430, 'stage')
+        platform.create(683, 430, 'stage');
+        platform.create(33+65, 380, 'stage');
+        platform.create(163+65,380, 'stage');
+        platform.create(293+65,380, 'stage');
+        platform.create(423+65, 380, 'stage');
+        platform.create(553+65, 380, 'stage');
+        platform.create(768+65, 380, 'stage');
+        platform.create(683+65, 380, 'stage');
 
         // The player and its settings
         player = this.physics.add.sprite(100, 450, 'bount');
-
+        boss = this.physics.add.sprite(400,100, 'boss-idle');
+        boss.setBounce(0.5);
+        boss.setCollideWorldBounds(true);
+        boss.setScale(2);
         //  Player physics properties. Give the little guy a slight bounce.
         player.setBounce(0);
         player.setCollideWorldBounds(true);
@@ -183,16 +226,16 @@ var Game = new Phaser.Class({
 
         });
 
-        bombs = this.physics.add.group();
-
         //  The score
         scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
 
         //  Collide the player and the stars with the platforms
         this.physics.add.collider(player, platforms);
         this.physics.add.collider(stars, platforms);
-        this.physics.add.collider(bombs, platforms);
-
+        this.physics.add.collider(player, platform);
+        this.physics.add.collider(boss, platform);
+        this.physics.add.collider(boss, platforms);
+        this.physics.add.collider(boss, player);
         //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
         
     },
