@@ -153,7 +153,6 @@ var Game = new Phaser.Class({
         platform.create(293, 530, 'stage');
         platform.create(423, 530, 'stage');
         platform.create(553, 530, 'stage');
-        platform.create(768, 530, 'stage');
         platform.create(683, 530, 'stage');
         platform.create(33+65, 480, 'stage');
         platform.create(163+65,480, 'stage');
@@ -227,7 +226,7 @@ var Game = new Phaser.Class({
         });
 
         //  The score
-        scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+        scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#FFF' });
 
         //  Collide the player and the stars with the platforms
         this.physics.add.collider(player, platforms);
