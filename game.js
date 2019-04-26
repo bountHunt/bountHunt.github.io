@@ -106,6 +106,10 @@ var cursors;
 var score = 0;
 var gameOver = false;
 var scoreText;
+var rect;
+var points;
+var index = 0;
+var graphics;
 
 var Game = new Phaser.Class({
     Extends: Phaser.Scene,
@@ -127,10 +131,16 @@ var Game = new Phaser.Class({
         this.load.spritesheet('boss-right', 'assets/Cat-Man-Right-ARM.png', {frameWidth: 80, frameHeight: 101});
         this.load.spritesheet('boss-left', 'assets/Cat-Man-Left-ARM.png', {frameWidth: 80, frameHeight: 101});
         this.load.image('stage','assets/new-platform.png');
+        this.load.audio('theme', [
+            'assets/backgroundMusic.mp3'
+        ]);
     },
 
     create: function()
     {
+        var music = this.sound.add('theme');
+
+        music.play();
         //  A simple background for our game
         this.add.image(400, 300, 'sky').setScale(2).refreshBody;
 
@@ -214,14 +224,14 @@ var Game = new Phaser.Class({
         //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
         stars = this.physics.add.group({
             key: 'star',
-            repeat: 11,
-            setXY: { x: 12, y: 0, stepX: 70 }
+            repeat: 5,
+            setXY: { x: Phaser.Math.Between(0, 800), y: Phaser.Math.Between(0, 300), stepX: Phaser.Math.Between(64, 200) }
         });
 
         stars.children.iterate(function (child) {
 
             //  Give each star a slightly different bounce
-            child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+            child.setBounceY(Phaser.Math.FloatBetween(0.8, 1.8));
 
         });
 
@@ -235,7 +245,21 @@ var Game = new Phaser.Class({
         this.physics.add.collider(boss, platform);
         this.physics.add.collider(boss, platforms);
         this.physics.add.collider(boss, player);
+        this.physics.add.overlap(player, stars, collectStar, null, this);
         //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
+        function collectStar (player, star)
+        {
+            star.disableBody(true, true);
+                    
+            score += 10;
+            scoreText.setText('Score: ' + score);
+            
+            if (stars.countActive(true) === 0){
+                stars.children.iterate(function (child) {
+                    child.enableBody(true, child.x, 0, true, true);
+                })
+            };
+        }
         
     },
 
@@ -269,6 +293,13 @@ var Game = new Phaser.Class({
         {
             player.setVelocityY(-250);
         }
+    },
+
+    collectStar: function(player, stars){
+        star.disableBody(true, true);
+
+        score += 10;
+        scoreText.setText('Score: ' + score);    
     }
 
 });
