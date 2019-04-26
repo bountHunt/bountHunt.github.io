@@ -231,7 +231,9 @@ var Game = new Phaser.Class({
         stars.children.iterate(function (child) {
 
             //  Give each star a slightly different bounce
-            child.setBounceY(Phaser.Math.FloatBetween(0.8, 1.8));
+            child.setBounce(1);
+            child.setCollideWorldBounds(true);
+            child.setVelocity(Phaser.Math.Between(-200, 200), 20);
 
         });
 
@@ -245,6 +247,7 @@ var Game = new Phaser.Class({
         this.physics.add.collider(boss, platform);
         this.physics.add.collider(boss, platforms);
         this.physics.add.collider(boss, player);
+        this.physics.add.collider(stars, platform);
         this.physics.add.overlap(player, stars, collectStar, null, this);
         //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
         function collectStar (player, star)
