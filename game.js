@@ -148,6 +148,7 @@ var Game = new Phaser.Class({
 
     create: function()
     {
+        x = 0.001;
         score = 0;
         console.log('Enjoy the Game :)');
         this.data.set('highscore', highscore)
@@ -261,7 +262,7 @@ var Game = new Phaser.Class({
             key: 'right-flex',
             frames:
             this.anims.generateFrameNumbers('boss-right', {start: 0, end: 4 }),
-            frameRate: 10,
+            frameRate: 3,
             repeat: -1
         });
 
@@ -269,7 +270,7 @@ var Game = new Phaser.Class({
             key: 'left-flex',
             frames:
             this.anims.generateFrameNumbers('boss-left', {start: 0, end: 4 }),
-            frameRate: 10,
+            frameRate: 3,
             repeat: -1
         });
 
@@ -277,7 +278,7 @@ var Game = new Phaser.Class({
             key: 'bothArms',
             frames:
             this.anims.generateFrameNumbers('boss-idle', {start: 0, end: 4 }),
-            frameRate: 10,
+            frameRate: 3,
             repeat: -1
         });
 
@@ -305,6 +306,8 @@ var Game = new Phaser.Class({
         highscoreText = this.add.text(18, 50, 'high score: 0', { fontSize: '16px', fill: '#FFF' });
 
         highscoreText.setText('High Score: ' + this.data.get('highscore'));
+
+        
 
         //  Collide the player and the stars with the platforms
         this.physics.add.collider(player, platforms);
@@ -380,18 +383,7 @@ var Game = new Phaser.Class({
         {
             player.setVelocityY(-300);
         }
-        if (score > 50){
-            boss.anims.play('right-flex');
-
-        }else if (score>100){
-            if (Phaser.Math.FloatBetween(0, 1) < 0.001) {
-                boss.anims.play('left-flex');
-            }
-        }else if (score>300){
-            if (Phaser.Math.FloatBetween(0, 1) < 0.001) {
-                boss.anims.play('bothArms');
-            }
-        }
+    
 
         if (score == 100) {
             x = 0.005;
@@ -413,6 +405,17 @@ var Game = new Phaser.Class({
             x = 0.3
         }
 
+        if (score == 50){
+            boss.anims.play('right-flex');
+
+        }else if (score == 100){
+            boss.anims.play('left-flex');
+            
+        }else if (score == 300){
+            boss.anims.play('bothArms');
+        }
+
+
 
         if(score > highscore){
             highscore = score;
@@ -427,7 +430,7 @@ var Game = new Phaser.Class({
             bomb.body.allowGravity = false;
         }
 
-        if (Phaser.Math.FloatBetween(0, 1) < x) {
+        if (Phaser.Math.FloatBetween(0, 1) < 1.5*x) {
             var bomb = bombs.create(0, 345, 'right-bullet');
             bomb.setBounceX(1);
             bomb.setCollideWorldBounds(false);
