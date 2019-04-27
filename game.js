@@ -451,15 +451,15 @@ var Game = new Phaser.Class({
         }
 
         if (score == 150){
-            x = 0.008;
+            x = 0.005;
         }
 
         if (score == 200){
-            x = 0.01;
+            x = 0.008;
         }
 
         if (score == 500) {
-            x = 0.018
+            x = 0.010;
         }
 
         if (score == 1000) {
