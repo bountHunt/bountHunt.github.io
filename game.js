@@ -134,11 +134,18 @@ var Game = new Phaser.Class({
         this.load.audio('theme', [
             'assets/backgroundMusic.mp3'
         ]);
+        this.load.image('right-bullet','assets/right-boss.png');
+        this.load.image('left-bullet','assets/left-boss.png');
+
     },
 
     create: function()
     {
+        this.sound.pauseOnBlur = false;
+        
         var music = this.sound.add('theme');
+
+        music.loop = true;
 
         music.play();
         //  A simple background for our game
@@ -153,37 +160,37 @@ var Game = new Phaser.Class({
         //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
         platforms.create(400, 605, 'ground').setScale(1).refreshBody();
         //  Now let's create some ledges
-        platform.create(400, 300, 'platform');
-        platform.create(368, 300, 'platform');
-        platform.create(432, 300, 'platform');
-        platform.create(464, 300, 'platform');
-        platform.create(336, 300, 'platform');
+        platform.create(400, 250, 'platform');
+        platform.create(368, 250, 'platform');
+        platform.create(432, 250, 'platform');
+        platform.create(464, 250, 'platform');
+        platform.create(336, 250, 'platform');
         platform.create(33, 530, 'stage');
         platform.create(163, 530, 'stage');
         platform.create(293, 530, 'stage');
         platform.create(423, 530, 'stage');
         platform.create(553, 530, 'stage');
         platform.create(683, 530, 'stage');
-        platform.create(33+65, 480, 'stage');
-        platform.create(163+65,480, 'stage');
-        platform.create(293+65,480, 'stage');
-        platform.create(423+65, 480, 'stage');
-        platform.create(553+65, 480, 'stage');
-        platform.create(768+65, 480, 'stage');
-        platform.create(683+65, 480, 'stage');
-        platform.create(33, 430, 'stage');
-        platform.create(163, 430, 'stage');
-        platform.create(293, 430, 'stage');
-        platform.create(423, 430, 'stage');
-        platform.create(553, 430, 'stage')
-        platform.create(683, 430, 'stage');
-        platform.create(33+65, 380, 'stage');
-        platform.create(163+65,380, 'stage');
-        platform.create(293+65,380, 'stage');
-        platform.create(423+65, 380, 'stage');
-        platform.create(553+65, 380, 'stage');
-        platform.create(768+65, 380, 'stage');
-        platform.create(683+65, 380, 'stage');
+        //platform.create(33+65, 480, 'stage');
+        //platform.create(163+65,480, 'stage');
+        //platform.create(293+65,480, 'stage');
+        //platform.create(423+65, 480, 'stage');
+        //platform.create(553+65, 480, 'stage');
+        //platform.create(768+65, 480, 'stage');
+        //platform.create(683+65, 480, 'stage');
+        platform.create(33, 380, 'stage');
+        platform.create(163, 380, 'stage');
+        platform.create(293, 380, 'stage');
+        platform.create(423, 380, 'stage');
+        platform.create(553, 380, 'stage')
+        platform.create(683, 380, 'stage');
+        platform.create(33+65, 450, 'stage');
+        platform.create(163+65,450, 'stage');
+        platform.create(293+65,450, 'stage');
+        platform.create(423+65, 450, 'stage');
+        platform.create(553+65, 450, 'stage');
+        platform.create(768+65, 450, 'stage');
+        platform.create(683+65, 450, 'stage');
 
         // The player and its settings
         player = this.physics.add.sprite(100, 450, 'bount');
@@ -218,6 +225,30 @@ var Game = new Phaser.Class({
             repeat: 1
         });
 
+        this.anims.create({
+            key: 'right-flex',
+            frames:
+            this.anims.generateFrameNumbers('boss-right', {start: 0, end: 4 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'left-flex',
+            frames:
+            this.anims.generateFrameNumbers('boss-left', {start: 0, end: 4 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'bothArms',
+            frames:
+            this.anims.generateFrameNumbers('boss-idle', {start: 0, end: 4 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
         //  Input Events
         cursors = this.input.keyboard.createCursorKeys();
 
@@ -242,13 +273,14 @@ var Game = new Phaser.Class({
 
         //  Collide the player and the stars with the platforms
         this.physics.add.collider(player, platforms);
-        this.physics.add.collider(stars, platforms);
         this.physics.add.collider(player, platform);
         this.physics.add.collider(boss, platform);
         this.physics.add.collider(boss, platforms);
-        this.physics.add.collider(boss, player);
         this.physics.add.collider(stars, platform);
+        this.physics.add.collider(stars, platforms)
+        this.physics.add.collider(stars, stars);
         this.physics.add.overlap(player, stars, collectStar, null, this);
+        
         //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
         function collectStar (player, star)
         {
@@ -259,7 +291,8 @@ var Game = new Phaser.Class({
             
             if (stars.countActive(true) === 0){
                 stars.children.iterate(function (child) {
-                    child.enableBody(true, child.x, 0, true, true);
+                    child.enableBody(true, Phaser.Math.Between(0,800), 0, true, true);
+                    child.setVelocity(Phaser.Math.Between(-200, 200), 20);
                 })
             };
         }
@@ -294,8 +327,30 @@ var Game = new Phaser.Class({
 
         if (cursors.up.isDown && player.body.touching.down)
         {
-            player.setVelocityY(-250);
+            player.setVelocityY(-300);
         }
+        if (score > 50){
+           if (Phaser.Math.FloatBetween(0, 1) < 0.001) {
+            boss.anims.play('right-flex');
+            
+            }
+        }else if (score>100){
+            if (Phaser.Math.FloatBetween(0, 1) < 0.001) {
+                boss.anims.play('left-flex');
+            }
+        }else if (score>300){
+            if (Phaser.Math.FloatBetween(0, 1) < 0.001) {
+                boss.anims.play('bothArms');
+            }
+        }
+    },
+
+    bullet: function(x) {
+
+        if (Phaser.Math.FloatBetween(0, 1) < x) {
+            
+        }
+
     },
 
     collectStar: function(player, stars){
