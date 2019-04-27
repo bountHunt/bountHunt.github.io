@@ -131,6 +131,8 @@ var graphics;
 var highscore = 0;
 var x = 0.001;
 var keys;
+var width = 800;
+var height = 600;
 
 var Game = new Phaser.Class({
     Extends: Phaser.Scene,
@@ -146,7 +148,7 @@ var Game = new Phaser.Class({
         this.load.image('sky', 'assets/NEW-BACKGROUND.png');
         this.load.image('ground', 'assets/platform.png');
         this.load.image('star', 'assets/star.png');
-        this.load.spritesheet('bount', 'assets/full-sprite.png', { frameWidth: 42, frameHeight: 37});
+        this.load.spritesheet('bount', 'assets/full-sprite.png', { frameWidth: 32, frameHeight: 32});
         this.load.image('platform', 'assets/platfor.png');
         this.load.spritesheet('boss-idle', 'assets/Cat-Man-TOO-THICK.png', {frameWidth: 80, frameHeight: 101});
         this.load.spritesheet('boss-right', 'assets/Cat-Man-Right-ARM.png', {frameWidth: 80, frameHeight: 101});
@@ -254,11 +256,13 @@ var Game = new Phaser.Class({
 
         //  Our player animations, turning, walking left and walking right.
 
+    
+
         
 
 
         this.anims.create({
-            key: 'left',
+            key: 'right',
             frames: this.anims.generateFrameNumbers('bount', { start: 4, end: 12 }),
             frameRate: 24,
             repeat: -1
@@ -273,7 +277,7 @@ var Game = new Phaser.Class({
         });
 
         this.anims.create({
-            key: 'right',
+            key: 'left',
             frames: this.anims.generateFrameNumbers('bount', { start: 13, end:  21}),
             frameRate: 24,
             repeat: 1
@@ -348,10 +352,29 @@ var Game = new Phaser.Class({
             if (this.scale.isFullscreen)
             {
                 this.scale.stopFullscreen();
+                width = 800;
+                height = 600;
             }
             else
             {
                 this.scale.startFullscreen();
+                width = 800*2;
+                height = 600*2;
+            }
+
+        }, this);
+
+        var PKey = this.input.keyboard.addKey('M');
+
+        PKey.on('down', function () {
+
+            if (music.start() == true)
+            {
+                music.pause();
+            }
+            else
+            {
+                music.start();
             }
 
         }, this);
@@ -498,9 +521,11 @@ var Game = new Phaser.Class({
 
 var config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: width,
+    height: height,
+
     physics: {
+
         default: 'arcade',
         arcade: {
             gravity: { y: 500 },
@@ -511,3 +536,6 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
+
+ 
+    
