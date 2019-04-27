@@ -163,6 +163,8 @@ var Game = new Phaser.Class({
 
         }, this);
 
+
+
         var music = this.sound.add('theme');
 
         music.loop = true;
