@@ -84,19 +84,18 @@ var MainMenu = new Phaser.Class({
         this.load.tilemapTiledJSON('map', 'assets/bounthunt.json');
         this.load.image('groundTiles', 'assets/.png');
         this.load.image('tilesetPlatform', 'assets/platfor.png');
+        this.load.image('victory', 'assets/NEW-BACKGROUND.png')
 
     },
     
 
     create: function() {
-        var map = this.make.tilemap({ key: 'map' });
-        var ground = map.addTilesetImage('kenny_ground_64x64', 'ground');
-        var slants = map.addTilesetImage('kenny_ground_64x64', 'ground');
-        var chains =   map.addTilesetImage('kenny_ground_64x64', 'ground');
-        var spikes = map.addTilesetImage('kenny_ground_64x64', 'ground');
+        this.add.image(400, 300, 'victory').setScale(2).refreshBody
 
+        this.add.text(400, 300, 'YOU WIN!!', { fontSize: '64px', fill: '#FFF' });
+        this.add.text(400, 400, 'Refresh to restart all over again :)', { fontSize: '32px', fill: '#FFF' });
+        this.add.text(400, 450, 'THANKS FOR PLAYING!!!', { fontSize: '16px', fill: '#FFF' });
 
-        map.createStaticLayer('Tile Lyaer 1', [ground, slants, chains, spikes])
     },
 
     update: function() {
@@ -117,6 +116,7 @@ var points;
 var index = 0;
 var graphics;
 var highscore = 0;
+var x = 0.001;
 
 var Game = new Phaser.Class({
     Extends: Phaser.Scene,
@@ -148,7 +148,10 @@ var Game = new Phaser.Class({
 
     create: function()
     {
+        score = 0;
+        console.log('Enjoy the Game :)');
         this.data.set('highscore', highscore)
+        
         
 
         this.sound.pauseOnBlur = false;
@@ -165,16 +168,16 @@ var Game = new Phaser.Class({
 
         //  The platforms group contains the ground and the 2 ledges we can jump on
         platforms = this.physics.add.staticGroup();
-
+        platfor = this.physics.add.staticGroup();
         //  Here we create the ground.
         //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
         platforms.create(400, 605, 'ground').setScale(1).refreshBody();
         //  Now let's create some ledges
-        platform.create(400, 250, 'platform');
-        platform.create(368, 250, 'platform');
-        platform.create(432, 250, 'platform');
-        platform.create(464, 250, 'platform');
-        platform.create(336, 250, 'platform');
+        platfor.create(400, 250, 'platform');
+        platfor.create(368, 250, 'platform');
+        platfor.create(432, 250, 'platform');
+        platfor.create(464, 250, 'platform');
+        platfor.create(336, 250, 'platform');
         platform.create(33, 530, 'stage');
         platform.create(163, 530, 'stage');
         platform.create(293, 530, 'stage');
@@ -228,6 +231,10 @@ var Game = new Phaser.Class({
         //this.physics.add.collider(player, rightbullet, hitRight, null, this);
 
         //  Our player animations, turning, walking left and walking right.
+
+        
+
+
         this.anims.create({
             key: 'left',
             frames: this.anims.generateFrameNumbers('bount', { start: 4, end: 12 }),
@@ -298,11 +305,12 @@ var Game = new Phaser.Class({
         highscoreText = this.add.text(18, 50, 'high score: 0', { fontSize: '16px', fill: '#FFF' });
 
         highscoreText.setText('High Score: ' + this.data.get('highscore'));
-        
+
         //  Collide the player and the stars with the platforms
         this.physics.add.collider(player, platforms);
         this.physics.add.collider(player, platform);
         this.physics.add.collider(boss, platform);
+        this.physics.add.collider(boss, platfor);
         this.physics.add.collider(boss, platforms);
         this.physics.add.collider(stars, platform);
         this.physics.add.collider(stars, platforms)
@@ -323,12 +331,9 @@ var Game = new Phaser.Class({
                 stars.children.iterate(function (child) {
                     child.enableBody(true, Phaser.Math.Between(0,800), 0, true, true);
                     child.setVelocity(Phaser.Math.Between(-200, 200), 20);
-                    var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+                    
 
-                    var bomb = bombs.create(x, 16, 'right-bullet');
-                    bomb.setBounce(1);
-                    bomb.setCollideWorldBounds(true);
-                    bomb.setVelocity(Phaser.Math.Between(10, 200), 20);
+                    
                 })
             };
         }
@@ -343,6 +348,8 @@ var Game = new Phaser.Class({
 
             this.scene.start('boss');
         }
+
+        
             
     },
 
@@ -374,10 +381,8 @@ var Game = new Phaser.Class({
             player.setVelocityY(-300);
         }
         if (score > 50){
-           if (Phaser.Math.FloatBetween(0, 1) < 0.001) {
             boss.anims.play('right-flex');
-            
-            }
+
         }else if (score>100){
             if (Phaser.Math.FloatBetween(0, 1) < 0.001) {
                 boss.anims.play('left-flex');
@@ -388,44 +393,64 @@ var Game = new Phaser.Class({
             }
         }
 
+        if (score == 100) {
+            x = 0.005;
+        }
+
+        if (score == 150){
+            x = 0.01;
+        }
+
+        if (score == 200){
+            x = 0.05;
+        }
+
+        if (score == 500) {
+            x = 0.1
+        }
+
+        if (score == 1000) {
+            x = 0.3
+        }
+
+
         if(score > highscore){
             highscore = score;
-            
-        }
-
         
-    },
-
-    bullet: function(x) {
+        }
 
         if (Phaser.Math.FloatBetween(0, 1) < x) {
-            
+            var bomb = bombs.create(0, 415, 'right-bullet');
+            bomb.setBounceX(1);
+            bomb.setCollideWorldBounds(false);
+            bomb.setVelocityX(Phaser.Math.Between(10, 200));
+            bomb.body.allowGravity = false;
         }
 
+        if (Phaser.Math.FloatBetween(0, 1) < x) {
+            var bomb = bombs.create(0, 345, 'right-bullet');
+            bomb.setBounceX(1);
+            bomb.setCollideWorldBounds(false);
+            bomb.setVelocityX(Phaser.Math.Between(10, 200));
+            bomb.body.allowGravity = false;
+        }
+
+        if (Phaser.Math.FloatBetween(0, 1) < x) {
+            var bomb = bombs.create(0, 565, 'right-bullet');
+            bomb.setBounceX(1);
+            bomb.setCollideWorldBounds(false);
+            bomb.setVelocityX(Phaser.Math.Between(10, 200));
+            bomb.body.allowGravity = false;
+        }
+
+        if (Phaser.Math.FloatBetween(0, 1) < x) {
+            var bomb = bombs.create(0, 495, 'right-bullet');
+            bomb.setBounceX(1);
+            bomb.setCollideWorldBounds(false);
+            bomb.setVelocityX(Phaser.Math.Between(10, 200));
+            bomb.body.allowGravity = false;
+        }
     },
-
-
-    hitRight: function(player, rbullet)
-    {
-    this.physics.pause();
-
-    player.setTint(0xff0000);
-
-    player.anims.play('turn');
-
-    gameOver = true;
-    },
-
-    hitLeft: function (player, lbullet)
-    {
-    this.physics.pause();
-
-    player.setTint(0xff0000);
-
-    player.anims.play('turn');
-
-    gameOver = true;
-    }
 
 });
 
