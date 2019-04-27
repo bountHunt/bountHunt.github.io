@@ -46,6 +46,8 @@ var boss = new Phaser.Class({
 
     preload: function(){
         this.load.image('gameover', 'assets/gameover.png')
+        this.load.audio('gameover1', [
+            'assets/gameoverMusic.mp3']);
 
     },
     
@@ -53,9 +55,17 @@ var boss = new Phaser.Class({
     create: function() {
         this.add.sprite(400,300, 'gameover').setScale(2).refreshBody;
 
+        var music = this.sound.add('gameover1');
+
+        music.loop = true;
+
+        music.play();
+
         this.input.once('pointerdown', function () {
 
             console.log('From Game Over to Game');
+
+            music.pause();
 
             this.scene.start('game');
 
@@ -85,6 +95,9 @@ var MainMenu = new Phaser.Class({
         this.load.image('groundTiles', 'assets/.png');
         this.load.image('tilesetPlatform', 'assets/platfor.png');
         this.load.image('victory', 'assets/NEW-BACKGROUND.png')
+        this.load.audio('gameover', [
+            'assets/gameoverMusic.mp3'
+        ]);
 
     },
     
@@ -327,6 +340,21 @@ var Game = new Phaser.Class({
         this.physics.add.collider(stars, platforms)
         this.physics.add.collider(stars, stars);
         this.physics.add.overlap(player, stars, collectStar, null, this);
+
+        var FKey = this.input.keyboard.addKey('F');
+
+        FKey.on('down', function () {
+
+            if (this.scale.isFullscreen)
+            {
+                this.scale.stopFullscreen();
+            }
+            else
+            {
+                this.scale.startFullscreen();
+            }
+
+        }, this);
 
         
         
