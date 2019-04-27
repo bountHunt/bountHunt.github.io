@@ -117,6 +117,7 @@ var index = 0;
 var graphics;
 var highscore = 0;
 var x = 0.001;
+var keys;
 
 var Game = new Phaser.Class({
     Extends: Phaser.Scene,
@@ -154,9 +155,14 @@ var Game = new Phaser.Class({
         this.data.set('highscore', highscore)
         
         
+        this.input.once('pointerdown', function () {
 
-        this.sound.pauseOnBlur = false;
-        
+            console.log('Fast Forward');
+            this.physics.start();
+            setTimeout(10000);
+
+        }, this);
+
         var music = this.sound.add('theme');
 
         music.loop = true;
@@ -348,6 +354,8 @@ var Game = new Phaser.Class({
             player.setTint(0xff0000);
 
             player.anims.play('turn');
+
+            music.pause();
 
             this.scene.start('boss');
         }
