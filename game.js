@@ -45,15 +45,21 @@ var boss = new Phaser.Class({
     },
 
     preload: function(){
-        this.load.image('ground', 'assets/platform.png');
-        this.load.spritesheet('bount', 'assets/full-sprite.png', { frameWidth: 42, frameHeight: 37});
-        this.load.image('backgrounds', 'bossbackground.png')
+        this.load.image('gameover', 'assets/gameover.png')
 
     },
     
 
     create: function() {
-        this.add.sprite(400,300, 'backgrounds').setScale(0.5).refreshBody;
+        this.add.sprite(400,300, 'gameover').setScale(2).refreshBody;
+
+        this.input.once('pointerdown', function () {
+
+            console.log('From Game Over to Game');
+
+            this.scene.start('game');
+
+        }, this);
     },
 
     update: function() {
@@ -110,6 +116,7 @@ var rect;
 var points;
 var index = 0;
 var graphics;
+var highscore = 0;
 
 var Game = new Phaser.Class({
     Extends: Phaser.Scene,
@@ -141,6 +148,9 @@ var Game = new Phaser.Class({
 
     create: function()
     {
+        this.data.set('highscore', highscore)
+        
+
         this.sound.pauseOnBlur = false;
         
         var music = this.sound.add('theme');
@@ -201,6 +211,21 @@ var Game = new Phaser.Class({
         //  Player physics properties. Give the little guy a slight bounce.
         player.setBounce(0);
         player.setCollideWorldBounds(true);
+        bombs = this.physics.add.group();
+        this.physics.add.collider(bombs, platforms);
+        this.physics.add.collider(player, bombs, hitBomb, null, this);
+
+        // = this.physics.add.group();
+
+        //leftbullet = this.physics.add.group();
+
+        //this.physics.add.collider(rightbullet, platforms);
+
+        //this.physics.add.collider(leftbullet, platforms);
+
+        //this.physics.add.collider(player, leftbullet, hitLeft, null, this);
+
+        //this.physics.add.collider(player, rightbullet, hitRight, null, this);
 
         //  Our player animations, turning, walking left and walking right.
         this.anims.create({
@@ -270,7 +295,10 @@ var Game = new Phaser.Class({
 
         //  The score
         scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#FFF' });
+        highscoreText = this.add.text(18, 50, 'high score: 0', { fontSize: '16px', fill: '#FFF' });
 
+        highscoreText.setText('High Score: ' + this.data.get('highscore'));
+        
         //  Collide the player and the stars with the platforms
         this.physics.add.collider(player, platforms);
         this.physics.add.collider(player, platform);
@@ -280,6 +308,8 @@ var Game = new Phaser.Class({
         this.physics.add.collider(stars, platforms)
         this.physics.add.collider(stars, stars);
         this.physics.add.overlap(player, stars, collectStar, null, this);
+
+        
         
         //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
         function collectStar (player, star)
@@ -293,18 +323,32 @@ var Game = new Phaser.Class({
                 stars.children.iterate(function (child) {
                     child.enableBody(true, Phaser.Math.Between(0,800), 0, true, true);
                     child.setVelocity(Phaser.Math.Between(-200, 200), 20);
+                    var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+
+                    var bomb = bombs.create(x, 16, 'right-bullet');
+                    bomb.setBounce(1);
+                    bomb.setCollideWorldBounds(true);
+                    bomb.setVelocity(Phaser.Math.Between(10, 200), 20);
                 })
             };
         }
-        
+
+        function hitBomb(player, bomb)
+        {
+            this.physics.pause();
+
+            player.setTint(0xff0000);
+
+            player.anims.play('turn');
+
+            this.scene.start('boss');
+        }
+            
     },
 
     update: function()
     {
-        if (gameOver)
-        {
-            return;
-        }
+
 
         if (cursors.left.isDown)
         {
@@ -343,6 +387,13 @@ var Game = new Phaser.Class({
                 boss.anims.play('bothArms');
             }
         }
+
+        if(score > highscore){
+            highscore = score;
+            
+        }
+
+        
     },
 
     bullet: function(x) {
@@ -353,11 +404,27 @@ var Game = new Phaser.Class({
 
     },
 
-    collectStar: function(player, stars){
-        star.disableBody(true, true);
 
-        score += 10;
-        scoreText.setText('Score: ' + score);    
+    hitRight: function(player, rbullet)
+    {
+    this.physics.pause();
+
+    player.setTint(0xff0000);
+
+    player.anims.play('turn');
+
+    gameOver = true;
+    },
+
+    hitLeft: function (player, lbullet)
+    {
+    this.physics.pause();
+
+    player.setTint(0xff0000);
+
+    player.anims.play('turn');
+
+    gameOver = true;
     }
 
 });
