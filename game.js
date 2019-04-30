@@ -157,8 +157,8 @@ var Game = new Phaser.Class({
         this.load.audio('theme', [
             'assets/backgroundMusic.mp3'
         ]);
-        this.load.image('right-bullet','assets/right-boss.png');
-        this.load.image('left-bullet','assets/left-boss.png');
+        this.load.image('right-bullet','assets/right-boss.png', {frameWidth: 16, frameHeight: 32});
+        this.load.image('left-bullet','assets/left-boss.png', {frameWidth: 16, frameHeight: 32});
 
     },
 
@@ -451,7 +451,7 @@ var Game = new Phaser.Class({
         }
 
         if (score == 150){
-            x = 0.005;
+            x = 0.007;
         }
 
         if (score == 200){
@@ -459,11 +459,11 @@ var Game = new Phaser.Class({
         }
 
         if (score == 500) {
-            x = 0.010;
+            x = 0.01;
         }
 
         if (score == 1000) {
-            x = 0.05
+            x = 0.02
         }
 
         if (score == 50){
@@ -484,35 +484,67 @@ var Game = new Phaser.Class({
         }
 
         if (Phaser.Math.FloatBetween(0, 1) < x) {
-            var bomb = bombs.create(0, 415, 'right-bullet');
-            bomb.setBounceX(1);
-            bomb.setCollideWorldBounds(false);
-            bomb.setVelocityX(Phaser.Math.Between(10, 200));
-            bomb.body.allowGravity = false;
+            if (Phaser.Math.FloatBetween(0, 1) <= 0.5) {
+                var bomb = bombs.create(0, 413, 'right-bullet').setScale(0.5);
+                bomb.setBounceX(1);
+                bomb.setCollideWorldBounds(false);
+                bomb.setVelocityX(Phaser.Math.Between(10, 200));
+                bomb.body.allowGravity = false;
+            } else {
+                var bomb = bombs.create(800, 413, 'left-bullet').setScale(0.5);
+                bomb.setBounceX(1);
+                bomb.setCollideWorldBounds(false);
+                bomb.setVelocityX(Phaser.Math.Between(-10, -200));
+                bomb.body.allowGravity = false;
+            }
         }
 
         if (Phaser.Math.FloatBetween(0, 1) < 1.5*x) {
-            var bomb = bombs.create(0, 345, 'right-bullet');
-            bomb.setBounceX(1);
-            bomb.setCollideWorldBounds(false);
-            bomb.setVelocityX(Phaser.Math.Between(10, 200));
-            bomb.body.allowGravity = false;
+            if (Phaser.Math.FloatBetween(0, 1) <= 0.5) {
+                var bomb = bombs.create(0, 343, 'right-bullet').setScale(0.5);
+                bomb.setBounceX(1);
+                bomb.setCollideWorldBounds(false);
+                bomb.setVelocityX(Phaser.Math.Between(10, 200));
+                bomb.body.allowGravity = false;
+            } else {
+                var bomb = bombs.create(800, 343, 'left-bullet').setScale(0.5);
+                bomb.setBounceX(1);
+                bomb.setCollideWorldBounds(false);
+                bomb.setVelocityX(Phaser.Math.Between(-10, -200));
+                bomb.body.allowGravity = false;
+            }
         }
 
         if (Phaser.Math.FloatBetween(0, 1) < x) {
-            var bomb = bombs.create(0, 565, 'right-bullet');
-            bomb.setBounceX(1);
-            bomb.setCollideWorldBounds(false);
-            bomb.setVelocityX(Phaser.Math.Between(10, 200));
-            bomb.body.allowGravity = false;
+            if (Phaser.Math.FloatBetween(0, 1) <= 0.5) {
+                var bomb = bombs.create(0, 563, 'right-bullet').setScale(0.5);
+                bomb.setBounceX(1);
+                bomb.setCollideWorldBounds(false);
+                bomb.setVelocityX(Phaser.Math.Between(10, 200));
+                bomb.body.allowGravity = false;
+            } else {
+                var bomb = bombs.create(800, 563, 'left-bullet').setScale(0.5);
+                bomb.setBounceX(1);
+                bomb.setCollideWorldBounds(false);
+                bomb.setVelocityX(Phaser.Math.Between(-10, -200));
+                bomb.body.allowGravity = false;
+            }
         }
 
         if (Phaser.Math.FloatBetween(0, 1) < x) {
-            var bomb = bombs.create(0, 495, 'right-bullet');
-            bomb.setBounceX(1);
-            bomb.setCollideWorldBounds(false);
-            bomb.setVelocityX(Phaser.Math.Between(10, 200));
-            bomb.body.allowGravity = false;
+            if (Phaser.Math.FloatBetween(0, 1) <= 0.5) {
+                var bomb = bombs.create(0, 493, 'right-bullet').setScale(0.5);
+                bomb.setBounceX(1);
+                bomb.setCollideWorldBounds(false);
+                bomb.setVelocityX(Phaser.Math.Between(10, 200));
+                bomb.body.allowGravity = false;
+            } else {
+                var bomb = bombs.create(800, 493, 'left-bullet').setScale(0.5);
+                bomb.setBounceX(1);
+                bomb.setCollideWorldBounds(false);
+                bomb.setVelocityX(Phaser.Math.Between(-10, -200));
+                bomb.body.allowGravity = false;
+            }
         }
     },
 
